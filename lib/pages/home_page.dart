@@ -12,20 +12,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
-  String homePageContent = '正在获取数据';
-
-  @override
-  void initState() {
-    getHomePageContent().then((value) {
-      setState(() {
-        homePageContent = value.toString();
-      });
-    });
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
+
+    var formData = {'lon': '115.02932', 'lat': '35.76189'};
+
     return Scaffold(
       appBar: AppBar(
         title: Text('百姓生活+'),
@@ -65,6 +56,7 @@ class _HomePageState extends State<HomePage>
                   FloorContent(floorGoodsList: floor2),
                   FloorTitle(picture_address: floor3Title),
                   FloorContent(floorGoodsList: floor3),
+                  HotGoods()
                 ],
               ),
             );
@@ -74,7 +66,7 @@ class _HomePageState extends State<HomePage>
             );
           }
         },
-        future: getHomePageContent(),
+        future: resuest('homePageContent', formData),
       ),
     );
   }
@@ -337,6 +329,28 @@ class FloorContent extends StatelessWidget {
         },
         child: Image.network(goods['image']),
       ),
+    );
+  }
+}
+
+class HotGoods extends StatefulWidget {
+  @override
+  _HotGoodsState createState() => _HotGoodsState();
+}
+
+class _HotGoodsState extends State<HotGoods> {
+  @override
+  void initState() {
+    super.initState();
+    resuest('homePageBelowConten', 1).then((value) {
+      print(value);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Text('324234324'),
     );
   }
 }

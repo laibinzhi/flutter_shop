@@ -76,6 +76,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.0.3"
+  flutter_screenutil:
+    dependency: "direct main"
+    description:
+      name: flutter_screenutil
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.1.1"
   flutter_swiper:
     dependency: "direct main"
     description:
@@ -186,4 +193,4 @@ packages:
     version: "2.0.8"
 sdks:
   dart: ">=2.9.0-14.0.dev <3.0.0"
-  flutter: ">=0.1.4 <3.0.0"
+  flutter: ">=1.19.0-4.3.pre <3.0.0"

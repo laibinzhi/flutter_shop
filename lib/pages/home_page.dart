@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../service/service_method.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'dart:convert';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -55,8 +56,14 @@ class SwiperDiy extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.init(context, designSize: Size(750, 1334));
+    print('设备像素密度:${ScreenUtil().pixelRatio}');
+    print('设备的高度:${ScreenUtil().screenHeight}');
+    print('设备的宽度:${ScreenUtil().screenWidth}');
+
     return Container(
-      height: 333,
+      width: ScreenUtil().setWidth(750),
+      height: ScreenUtil().setHeight(333),
       child: Swiper(
         itemCount: swiperDataList.length,
         itemBuilder: (BuildContext context, int index) {

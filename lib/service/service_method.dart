@@ -1,6 +1,5 @@
-import 'package:dio/dio.dart';
 import 'dart:async';
-import 'dart:io';
+import 'package:dio/dio.dart';
 import '../config/service_url.dart';
 
 //获取首页主题内容
@@ -41,7 +40,7 @@ Future getHomePageBelowContent() async {
   }
 }
 
-Future resuest(url, formData) async {
+Future request(url, {formData}) async {
   try {
     print('开始获取数据...........');
     Response response;
@@ -60,5 +59,4 @@ Future resuest(url, formData) async {
   } catch (e) {
     return print('ERROR:======>$e');
   }
-
 }

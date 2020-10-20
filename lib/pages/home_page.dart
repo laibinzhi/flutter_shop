@@ -228,9 +228,9 @@ class TopNavigator extends StatelessWidget {
       this.navigatorList.removeRange(10, navigatorList.length);
     }
     return Container(
-      height: ScreenUtil().setHeight(320),
       padding: EdgeInsets.all(3.0),
       child: GridView.count(
+        shrinkWrap: true,
         crossAxisCount: 5,
         physics: NeverScrollableScrollPhysics(),
         padding: EdgeInsets.all(5.0),

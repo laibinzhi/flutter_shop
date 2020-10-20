@@ -26,7 +26,7 @@ class _CategoryPageState extends State<CategoryPage> {
             Column(
               children: [
                 RightCategoryNav(),
-                CategoryGoodsList(),
+                Expanded(child: CategoryGoodsList()),
               ],
             ),
           ],
@@ -155,6 +155,8 @@ class CategoryGoodsList extends StatefulWidget {
 }
 
 class _CategoryGoodsListState extends State<CategoryGoodsList> {
+  List<CategoryListData> list = [];
+
   @override
   void initState() {
     _getGoodsList();
@@ -164,7 +166,16 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Text('商品列表'),
+      child: Container(
+        width: ScreenUtil().setWidth(570),
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            return _ListWidget(index);
+          },
+          itemCount: list.length,
+        ),
+      ),
     );
   }
 
@@ -177,7 +188,86 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
     await request('getMallGoods', formData: data).then((value) {
       var data = json.decode(value.toString());
       CategoryGoodsListModel goodsList = CategoryGoodsListModel.fromJson(data);
-      print('-----------------------------:${goodsList.data[0].goodsName}');
+      print('--------------------------${goodsList.data[0].goodsName}');
+
+      setState(() {
+        list = goodsList.data;
+      });
+      print('>>>>>>>>>>>>>>>>>>>:${list[0].goodsName}');
     });
+  }
+
+  //商品图片
+  Widget _goodsImage(index) {
+    return Container(
+      width: ScreenUtil().setWidth(200),
+      child: Image.network(list[index].image),
+    );
+  }
+
+  //商品名称
+  Widget _goodName(index) {
+    return Container(
+      padding: EdgeInsets.all(5.0),
+      width: ScreenUtil().setWidth(370),
+      child: Text(
+        list[index].goodsName,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(fontSize: ScreenUtil().setSp(28)),
+      ),
+    );
+  }
+
+  //商品价格
+  Widget _goodPrice(index) {
+    return Container(
+      margin: EdgeInsets.only(top: 20.0),
+      width: ScreenUtil().setWidth(370),
+      child: Row(
+        children: [
+          Text(
+            '价格：￥${list[index].presentPrice}',
+            style: TextStyle(
+              color: Colors.pink,
+              fontSize: ScreenUtil().setSp(30),
+            ),
+          ),
+          Text(
+            '￥${list[index].oriPrice}',
+            style: TextStyle(
+              color: Colors.black26,
+              decoration: TextDecoration.lineThrough,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _ListWidget(int index) {
+    return InkWell(
+      onTap: () {},
+      child: Container(
+        padding: EdgeInsets.only(
+          top: 5.0,
+          bottom: 5.0,
+        ),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(
+            bottom: BorderSide(width: 1.0, color: Colors.black12),
+          ),
+        ),
+        child: Row(
+          children: [
+            _goodsImage(index),
+            Column(
+              children: [_goodName(index), _goodPrice(index)],
+            )
+          ],
+        ),
+      ),
+    );
   }
 }

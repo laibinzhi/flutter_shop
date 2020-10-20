@@ -63,7 +63,7 @@ class _HomePageState extends State<HomePage>
                       '',
                   showInfo: true),
               onRefresh: () async {
-                print('开始加载更多');
+                print('开始下拉刷新');
               },
               onLoad: () async {
                 print('开始加载更多.....');
@@ -232,6 +232,7 @@ class TopNavigator extends StatelessWidget {
       padding: EdgeInsets.all(3.0),
       child: GridView.count(
         crossAxisCount: 5,
+        physics: NeverScrollableScrollPhysics(),
         padding: EdgeInsets.all(5.0),
         children: navigatorList.map((item) {
           return _gridViewItemUI(context, item);

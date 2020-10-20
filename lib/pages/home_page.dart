@@ -4,6 +4,7 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'dart:convert';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_easyrefresh/easy_refresh.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -21,7 +22,6 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-    _getHotGoods();
   }
 
   @override
@@ -52,8 +52,33 @@ class _HomePageState extends State<HomePage>
             List<Map> floor2 = (data['data']['floor2'] as List).cast();
             List<Map> floor3 = (data['data']['floor3'] as List).cast();
 
-            return SingleChildScrollView(
-              child: Column(
+            return EasyRefresh(
+              footer: ClassicalFooter(
+                  bgColor: Colors.white,
+                  textColor: Colors.pink,
+                  infoColor: Colors.pink,
+                  noMoreText: '',
+                  infoText: '加载中',
+                  loadReadyText: '上拉架子啊'
+                      '',
+                  showInfo: true),
+              onRefresh: () async {
+                print('开始加载更多');
+              },
+              onLoad: () async {
+                print('开始加载更多.....');
+                var formData = {'page': page};
+                await request('homePageBelowConten', formData: formData)
+                    .then((value) {
+                  var data = json.decode(value.toString());
+                  List<Map> newGoodsList = (data['data'] as List).cast();
+                  setState(() {
+                    hotGoodsList.addAll(newGoodsList);
+                    page++;
+                  });
+                });
+              },
+              child: ListView(
                 children: [
                   SwiperDiy(swiperDataList: swiper),
                   TopNavigator(navigatorList: navgatorList),
@@ -80,18 +105,6 @@ class _HomePageState extends State<HomePage>
         future: request('homePageContent', formData: formData),
       ),
     );
-  }
-
-  void _getHotGoods() {
-    var formData = {'page': page};
-    request('homePageBelowConten', formData: formData).then((value) {
-      var data = json.decode(value.toString());
-      List<Map> newGoodsList = (data['data'] as List).cast();
-      setState(() {
-        hotGoodsList.addAll(newGoodsList);
-        page++;
-      });
-    });
   }
 
   Widget hotTitle = Container(

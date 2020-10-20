@@ -4,6 +4,7 @@ import 'package:provide/provide.dart';
 import '../service/service_method.dart';
 import 'dart:convert';
 import '../model/category.dart';
+import '../model/categoryGoodsList.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CategoryPage extends StatefulWidget {
@@ -175,7 +176,8 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
     };
     await request('getMallGoods', formData: data).then((value) {
       var data = json.decode(value.toString());
-      print('分类商品列表------------------------------------------${value}');
+      CategoryGoodsListModel goodsList = CategoryGoodsListModel.fromJson(data);
+      print('-----------------------------:${goodsList.data[0].goodsName}');
     });
   }
 }

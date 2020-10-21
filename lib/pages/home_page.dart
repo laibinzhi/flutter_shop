@@ -79,9 +79,7 @@ class _HomePageState extends State<HomePage>
                     .then((value) {
                   var data = json.decode(value.toString());
                   List<Map> newGoodsList = (data['data'] as List).cast();
-                  _easyRefreshController.finishRefresh(
-                      success: true,
-                      noMore: newGoodsList.length > 0 ? false : true);
+                  _easyRefreshController.finishRefresh(success: true);
                   setState(() {
                     hotGoodsList.addAll(newGoodsList);
                     page++;

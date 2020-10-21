@@ -122,6 +122,7 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
   }
 }
 
+//小类右侧导航
 class RightCategoryNav extends StatefulWidget {
   @override
   _RightCategoryNavState createState() => _RightCategoryNavState();
@@ -140,7 +141,7 @@ class _RightCategoryNavState extends State<RightCategoryNav> {
                 Border(bottom: BorderSide(width: 1, color: Colors.black12))),
         child: ListView.builder(
           itemBuilder: (context, index) {
-            return _rightInkWell(childCategory.childCategoryList[index]);
+            return _rightInkWell(index, childCategory.childCategoryList[index]);
           },
           itemCount: childCategory.childCategoryList.length,
           scrollDirection: Axis.horizontal,
@@ -149,14 +150,23 @@ class _RightCategoryNavState extends State<RightCategoryNav> {
     });
   }
 
-  Widget _rightInkWell(BxMallSubDto item) {
+  Widget _rightInkWell(int index, BxMallSubDto item) {
+    bool isClick = false;
+    isClick = (index == Provide.value<ChildCategory>(context).childIndex
+        ? true
+        : false);
+
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Provide.value<ChildCategory>(context).changeChildIndex(index);
+      },
       child: Container(
         padding: EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
         child: Text(
           item.mallSubName,
-          style: TextStyle(fontSize: ScreenUtil().setSp(28)),
+          style: TextStyle(
+              fontSize: ScreenUtil().setSp(28),
+              color: isClick ? Colors.pink : Colors.black),
         ),
       ),
     );

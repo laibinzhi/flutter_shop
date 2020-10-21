@@ -59,8 +59,7 @@ class _HomePageState extends State<HomePage>
                   infoColor: Colors.pink,
                   noMoreText: '',
                   infoText: '加载中',
-                  loadReadyText: '上拉架子啊'
-                      '',
+                  loadReadyText: '上拉加载',
                   showInfo: true),
               onRefresh: () async {
                 print('开始下拉刷新');

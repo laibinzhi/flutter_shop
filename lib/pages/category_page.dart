@@ -75,7 +75,8 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
         });
         var childList = list[index].bxMallSubDto;
         var categoryId = list[index].mallCategoryId;
-        Provide.value<ChildCategory>(context).getChildCategory(childList);
+        Provide.value<ChildCategory>(context)
+            .getChildCategory(childList, categoryId);
         _getGoodsList(categoryId: categoryId);
       },
       child: Container(
@@ -103,17 +104,18 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
         list = category.data;
       });
       Provide.value<ChildCategory>(context)
-          .getChildCategory(list[0].bxMallSubDto);
+          .getChildCategory(list[0].bxMallSubDto, list[0].mallCategoryId);
     });
   }
 
-  void _getGoodsList({String categoryId}) async {
+  void _getGoodsList({String categoryId}) {
     var data = {
       'categoryId': categoryId == null ? '4' : categoryId,
       'categorySubId': '',
       'page': 1,
     };
-    await request('getMallGoods', formData: data).then((value) {
+
+    request('getMallGoods', formData: data).then((value) {
       var data = json.decode(value.toString());
       CategoryGoodsListModel goodsList = CategoryGoodsListModel.fromJson(data);
       Provide.value<CategoryGoodsListProvide>(context)
@@ -158,7 +160,9 @@ class _RightCategoryNavState extends State<RightCategoryNav> {
 
     return InkWell(
       onTap: () {
-        Provide.value<ChildCategory>(context).changeChildIndex(index);
+        Provide.value<ChildCategory>(context)
+            .changeChildIndex(index, item.mallSubId);
+        _getGoodsList(item.mallSubId);
       },
       child: Container(
         padding: EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
@@ -170,6 +174,27 @@ class _RightCategoryNavState extends State<RightCategoryNav> {
         ),
       ),
     );
+  }
+
+  void _getGoodsList(String categorySubId) {
+    var data = {
+      'categoryId': Provide.value<ChildCategory>(context).categoryId,
+      'categorySubId': categorySubId,
+      'page': 1,
+    };
+
+    request('getMallGoods', formData: data).then((value) {
+      var data = json.decode(value.toString());
+      CategoryGoodsListModel goodsList = CategoryGoodsListModel.fromJson(data);
+
+      if (goodsList.data == null) {
+        Provide.value<CategoryGoodsListProvide>(context)
+            .getCategoryGoodsList([]);
+      } else {
+        Provide.value<CategoryGoodsListProvide>(context)
+            .getCategoryGoodsList(goodsList.data);
+      }
+    });
   }
 }
 
@@ -183,18 +208,26 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
   @override
   Widget build(BuildContext context) {
     return Provide<CategoryGoodsListProvide>(builder: (context, child, data) {
-      return Expanded(
-        child: Container(
-          width: ScreenUtil().setWidth(570),
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              return _ListWidget(data.goodsList, index);
-            },
-            itemCount: data.goodsList.length,
+      if (data.goodsList.length > 0) {
+        return Expanded(
+          child: Container(
+            width: ScreenUtil().setWidth(570),
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return _ListWidget(data.goodsList, index);
+              },
+              itemCount: data.goodsList.length,
+            ),
           ),
-        ),
-      );
+        );
+      } else {
+        return Expanded(
+          child: Center(
+            child: Text('暂时没有数据'),
+          ),
+        );
+      }
     });
   }
 

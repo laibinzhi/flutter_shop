@@ -15,6 +15,7 @@ class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
   int page = 1;
   List<Map> hotGoodsList = [];
+  EasyRefreshController _easyRefreshController = EasyRefreshController();
 
   @override
   bool get wantKeepAlive => true;
@@ -22,6 +23,12 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _easyRefreshController.dispose();
+    super.dispose();
   }
 
   @override
@@ -53,6 +60,7 @@ class _HomePageState extends State<HomePage>
             List<Map> floor3 = (data['data']['floor3'] as List).cast();
 
             return EasyRefresh(
+              enableControlFinishLoad: true,
               footer: ClassicalFooter(
                   bgColor: Colors.white,
                   textColor: Colors.pink,
@@ -71,6 +79,9 @@ class _HomePageState extends State<HomePage>
                     .then((value) {
                   var data = json.decode(value.toString());
                   List<Map> newGoodsList = (data['data'] as List).cast();
+                  _easyRefreshController.finishRefresh(
+                      success: true,
+                      noMore: newGoodsList.length > 0 ? false : true);
                   setState(() {
                     hotGoodsList.addAll(newGoodsList);
                     page++;

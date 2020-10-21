@@ -207,6 +207,19 @@ class CategoryGoodsList extends StatefulWidget {
 
 class _CategoryGoodsListState extends State<CategoryGoodsList> {
   var scrollController = new ScrollController();
+  EasyRefreshController _easyRefreshController = EasyRefreshController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    _easyRefreshController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -225,6 +238,8 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
           child: Container(
             width: ScreenUtil().setWidth(570),
             child: EasyRefresh(
+              enableControlFinishLoad: true,
+              controller: _easyRefreshController,
               footer: ClassicalFooter(
                   bgColor: Colors.white,
                   textColor: Colors.pink,
@@ -272,14 +287,13 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
     await request('getMallGoods', formData: data).then((value) {
       var data = json.decode(value.toString());
       CategoryGoodsListModel goodsList = CategoryGoodsListModel.fromJson(data);
-
-      print(
-          '-----------------------获取列表大小:${goodsList.data.length}-----------------------------------');
       if (goodsList.data == null) {
         Provide.value<ChildCategory>(context).changeNoMore('没有更多了');
+        _easyRefreshController.finishLoad(success: true, noMore: true);
       } else {
         Provide.value<CategoryGoodsListProvide>(context)
             .getMoreList(goodsList.data);
+        _easyRefreshController.finishLoad(success: true, noMore: false);
       }
     });
   }
